@@ -78,7 +78,7 @@ The library has been designed to provide as much flexibility as possible with th
 ```jsx
 import React from 'react';
 import {Dimensions, View} from 'react-native';
-import {ChartDot, ChartPath, ChartPathProvider, monotoneCubicInterpolation} from 'react-native-animated-charts';
+import {ChartDot, ChartPath, ChartPathProvider, monotoneCubicInterpolation} from '@rainbow-me/animated-charts';
 
 export const {width: SIZE} = Dimensions.get('window');
 
@@ -175,8 +175,8 @@ It's not essential in the library, but we have decided to include a lot of helpe
 ## Interpolations
 We have two interpolators which share the most of the API: `bSplineInterpolation` and `monotoneCubicInterpolation`.
 ```js
-import { bSplineInterpolation as interpolator } from 'react-native-animated-charts';
-// import { monotoneCubicInterpolation as interpolator } from 'react-native-animated-charts';
+import { bSplineInterpolation as interpolator } from '@rainbow-me/animated-charts';
+// import { monotoneCubicInterpolation as interpolator } from '@rainbow-me/animated-charts';
 
 const interpolatedData = interpolator(data)(80, true, false);
 ```

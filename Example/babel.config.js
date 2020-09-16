@@ -11,7 +11,7 @@ module.exports = {
           'prop-types': './node_modules/prop-types',
           'react': './node_modules/react',
           'react-native': './node_modules/react-native',
-          'react-native-animated-charts': './../src',
+          '@rainbow-me/animated-charts': './../src',
           'react-native-gesture-handler':
             './node_modules/react-native-gesture-handler',
           'react-native-haptic-feedback':
