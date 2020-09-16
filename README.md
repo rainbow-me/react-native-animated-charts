@@ -35,11 +35,13 @@ I'm still not sure if it's a good move so we can decide to move some props from 
 1. Install [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/next/installation) in the newest version. 
 2. 
 ```bash
-yarn add react-native-animated-charts
+yarn add @rainbow-me/animated-charts
+npm i @rainbow-me/animated-charts
 ```
 3. If you want to use haptic feedback on the press in / out, install
 ```bash
 yarn add react-native-haptic-feedback
+npm i react-native-haptic-feedback
 ```
 
 The library is verified on `2.0.0-alpha.6` version of reanimated.

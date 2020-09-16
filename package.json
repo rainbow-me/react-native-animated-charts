@@ -1,15 +1,20 @@
 {
-  "name": "react-native-animated-charts",
+  "name": "@rainbow-me/animated-charts",
   "version": "1.0.0-alpha.1",
   "description": "The library provides a set of components and helpers for building complex and beautiful animated linear (only - for now) charts. It's a part of the [Rainbow.me project](https://rainbow.me/).",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release": "release-it"
   },
   "author": "Michał Osadnik",
   "files": [
     "src/"
   ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.11.4",
@@ -21,5 +26,19 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^4.3.0",
+    "release-it": "^14.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rainbow-me/react-native-animated-charts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rainbow-me/react-native-animated-charts/issues"
+  },
+  "homepage": "https://github.com/rainbow-me/react-native-animated-charts#readme"
 }
