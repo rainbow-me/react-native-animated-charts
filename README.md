@@ -38,11 +38,6 @@ I'm still not sure if it's a good move so we can decide to move some props from 
 yarn add @rainbow-me/animated-charts
 npm i @rainbow-me/animated-charts
 ```
-3. If you want to use haptic feedback on the press in / out, install
-```bash
-yarn add react-native-haptic-feedback
-npm i react-native-haptic-feedback
-```
 
 The library is verified on `2.0.0-alpha.6` version of reanimated.
 
@@ -116,7 +111,7 @@ The whole chart's structure has to be wrapped with `ChartProvider`. It's respons
 | Prop name       | type       | default / obligatory   | description |
 |-----------------|------------|------------------------|-------------|
 | `softMargin`    | `number`   | `0`                    |  While scrubbing the chart touching edges of the screen you may want make points on the edges more accessible. With `softMargin` it's possible to access points on edges doubling the speed of scrubbing beyond this margin.  |
-| `enableHaptics` | `boolean`  | `false`                |  On pressing in/out on the chart it might be expected to make haptic feedback. It will happen with `enableHaptics` set to `true` and `react-native-haptic-feedback` installed    |
+| `enableHaptics` | `boolean`  | `false`                |  On pressing in/out on the chart it might be expected to make haptic feedback. It will happen with `enableHaptics` set to `true`.   |
 | `data`          | <code>{ points: [Point], nativePoints: [Point], smoothingStrategy?: 'bezier'&#124;'simple'&#124;'complex', smoothingFactor  }<code/>   | obligatory  | Object containing data structure and way to display them. Each of the properties is explained below.  |
 | `springConfig`  | object  | `{damping: 15, mass: 1, stiffness: 600}`  | Object [defining the spring animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). This spring is used for a dot's scale.
 | `timingFeedbackConfig`  | object  | `{duration: 80}`  | Object [defining the timing animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). `timingFeedbackConfig` is used for a path's opacity and width.

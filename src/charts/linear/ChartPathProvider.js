@@ -8,14 +8,13 @@ import {
   withTiming,
   // eslint-disable-next-line import/no-unresolved
 } from 'react-native-reanimated';
+import hapticFeedback from 'react-native-haptic-feedback'
 import ChartContext from '../../helpers/ChartContext';
 import { findYExtremes } from '../../helpers/extremesHelpers';
 import useReactiveSharedValue from '../../helpers/useReactiveSharedValue';
 
 function impactHeavy() {
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  const ReactNativeHapticFeedback = require('react-native-haptic-feedback');
-  ReactNativeHapticFeedback.default.trigger('impactHeavy');
+  hapticFeedback.trigger('impactHeavy');
 }
 
 const android = Platform.OS === 'android';

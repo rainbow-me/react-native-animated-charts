@@ -15,7 +15,7 @@ module.exports = {
           'react-native-gesture-handler':
             './node_modules/react-native-gesture-handler',
           'react-native-haptic-feedback':
-            './node_modules/react-native-haptic-feedback',
+            '../node_modules/react-native-haptic-feedback',
           'react-native-reanimated': './node_modules/react-native-reanimated',
           'react-native-svg': './node_modules/react-native-svg',
         },
