@@ -222,6 +222,6 @@ There're a few things left to make it polished regarding linear charts:
 - [ ] Support for gestures - pinching, swiping, etc.
 - [ ] more parameters regarding interpolation, smoothing, and animations (i.e. allow to override `springConfig` and `timingConfig`)
 
+## License
 
-
-
+Reanimated library is licensed under [The MIT License](LICENSE). 
