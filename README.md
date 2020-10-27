@@ -105,6 +105,7 @@ It's important to have it as a separated component because under this component 
   - The `complex` strategy uses approach explained [here](https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74) using cubic splines. It's parametrized by `smoothingFactor`.
   - The `simple` strategy is a bit simplified `complex` strategy using quadratic splines. It's parametrized by `smoothingFactor`.
 - `smoothingFactor`. Is a value from `0` to `1` defining how smooth a presentation should be. `0` means no smoothing, and it's the default. `smoothingFactor` has an impact if `smoothingStrategy` is `simple` or `complex`.
+- `yRange`. 2-elements array with numbers describing minY and maxY in this order. When not applied, charts are automatically adjusted vertically. However, when data are monotonical, they might present incorrectly without bounding due to numerical issues. 
 
 ### `ChartPath`
 This component is used for showing the path itself.

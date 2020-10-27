@@ -55,8 +55,10 @@ function combineConfigs(a, b) {
   return r;
 }
 
-const parse = data => {
+const parse = (data, yRange) => {
   const { greatestY, smallestY } = findYExtremes(data);
+  const minY = yRange ? yRange[0] : smallestY.y;
+  const maxY = yRange ? yRange[1] : greatestY.y;
   const smallestX = data[0];
   const greatestX = data[data.length - 1];
   return [
@@ -64,7 +66,7 @@ const parse = data => {
       originalX: x,
       originalY: y,
       x: (x - smallestX.x) / (greatestX.x - smallestX.x),
-      y: 1 - (y - smallestY.y) / (greatestY.y - smallestY.y),
+      y: 1 - (y - minY) / (maxY - minY),
     })),
     {
       greatestX,
@@ -202,7 +204,7 @@ export default function ChartPathProvider({
     if (!data || !data.points || data.points.length === 0) {
       return;
     }
-    const [parsedData] = parse(data.points);
+    const [parsedData] = parse(data.points, data.yRange);
     const [parsedoriginalData, newExtremes] = parse(
       data.nativePoints || data.points
     );
