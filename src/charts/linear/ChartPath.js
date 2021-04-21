@@ -17,6 +17,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Path, Svg } from 'react-native-svg';
+
 import ChartContext, {
   useGenerateValues as generateValues,
 } from '../../helpers/ChartContext';
@@ -64,8 +65,10 @@ function combineConfigs(a, b) {
   return r;
 }
 
-const parse = data => {
+const parse = (data, yRange) => {
   const { greatestY, smallestY } = findYExtremes(data);
+  const minY = yRange ? yRange[0] : smallestY.y;
+  const maxY = yRange ? yRange[1] : greatestY.y;
   const smallestX = data[0];
   const greatestX = data[data.length - 1];
   return [
@@ -73,7 +76,7 @@ const parse = data => {
       originalX: x,
       originalY: y,
       x: (x - smallestX.x) / (greatestX.x - smallestX.x),
-      y: 1 - (y - smallestY.y) / (greatestY.y - smallestY.y),
+      y: 1 - (y - minY) / (maxY - minY),
     })),
     {
       greatestX,
@@ -100,6 +103,13 @@ function setoriginalXYAccordingToPosition(
     if (i === data.value.length - 1) {
       idx = data.value.length - 1;
     }
+  }
+  if (!data.value[idx]) {
+    // prevent the following error on android:
+    // java.lang.RuntimeException: undefined is not an object (evaluating 'data.value[idx].originalX')
+    // why data.value = [] sometimes onActive?
+    console.warn('No data available for chart', data.value.length, idx);
+    return;
   }
   originalX.value = data.value[idx].originalX.toString();
   originalY.value = data.value[idx].originalY
@@ -197,20 +207,19 @@ export default function ChartPathProvider({
     } else {
       setData(providedData);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [providedData]);
 
   const smoothingStrategy = useSharedValue(data.smoothingStrategy);
 
   useEffect(() => {
-    if (!data || !data.points) {
+    if (!data || !data.points || data.points.length === 0) {
       return;
     }
-    const [parsedData] = parse(data.points);
+    const [parsedData] = parse(data.points, data.yRange);
     const [parsedoriginalData, newExtremes] = parse(
       data.nativePoints || data.points
     );
-    setContextValue(prev => ({ ...prev, ...newExtremes, data }));
+    setContextValue((prev) => ({ ...prev, ...newExtremes, data }));
     setExtremes(newExtremes);
     if (prevData.value.length !== 0) {
       valuesStore.current.prevData = currData.value;
@@ -248,13 +257,12 @@ export default function ChartPathProvider({
       currData.value = parsedData;
       curroriginalData.value = parsedoriginalData;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const isStarted = useSharedValue(false, 'isStarted');
 
   const onLongPressGestureEvent = useAnimatedGestureHandler({
-    onActive: event => {
+    onActive: (event) => {
       state.value = event.state;
       if (!currData.value || currData.value.length === 0) {
         return;
@@ -282,7 +290,7 @@ export default function ChartPathProvider({
       );
 
       let idx = 0;
-      let ss = smoothingStrategy;
+      const ss = smoothingStrategy;
       for (let i = 0; i < currData.value.length; i++) {
         if (getValue(currData, i, ss).x > eventX / layoutSize.value.width) {
           idx = i;
@@ -332,7 +340,7 @@ export default function ChartPathProvider({
       );
       positionX.value = eventX;
     },
-    onCancel: event => {
+    onCancel: (event) => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -350,7 +358,7 @@ export default function ChartPathProvider({
         );
       }
     },
-    onEnd: event => {
+    onEnd: (event) => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -372,7 +380,7 @@ export default function ChartPathProvider({
         impactHeavy();
       }
     },
-    onFail: event => {
+    onFail: (event) => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -390,11 +398,28 @@ export default function ChartPathProvider({
         );
       }
     },
-    onStart: event => {
+    onStart: (event) => {
+      // WARNING: the following code does not run on using iOS, but it does on Android.
+      // I use the same code from onActive except of "progress.value = 1" which was taken from the original onStart.
       state.value = event.state;
       if (!currData.value || currData.value.length === 0) {
         return;
       }
+      if (!isStarted.value) {
+        dotScale.value = withSpring(
+          1,
+          combineConfigs(springDefaultConfig, springConfig)
+        );
+        pathOpacity.value = withTiming(
+          0,
+          combineConfigs(timingFeedbackDefaultConfig, timingFeedbackConfig)
+        );
+      }
+
+      if (hapticsEnabledValue.value && !isStarted.value) {
+        impactHeavy();
+      }
+      isStarted.value = true;
 
       const eventX = positionXWithMargin(
         event.x,
@@ -404,8 +429,9 @@ export default function ChartPathProvider({
 
       progress.value = 1;
       let idx = 0;
+      const ss = smoothingStrategy;
       for (let i = 0; i < currData.value.length; i++) {
-        if (currData.value[i].x > eventX / layoutSize.value.width) {
+        if (getValue(currData, i, ss).x > eventX / layoutSize.value.width) {
           idx = i;
           break;
         }
@@ -413,37 +439,48 @@ export default function ChartPathProvider({
           idx = currData.value.length - 1;
         }
       }
+
+      if (
+        ss.value === 'bezier' &&
+        currData.value.length > 30 &&
+        eventX / layoutSize.value.width >=
+          currData.value[currData.value.length - 2].x
+      ) {
+        const prevLastY = currData.value[currData.value.length - 2].y;
+        const prevLastX = currData.value[currData.value.length - 2].x;
+        const lastY = currData.value[currData.value.length - 1].y;
+        const lastX = currData.value[currData.value.length - 1].x;
+        const progress =
+          (eventX / layoutSize.value.width - prevLastX) / (lastX - prevLastX);
+        positionY.value =
+          (prevLastY + progress * (lastY - prevLastY)) *
+          layoutSize.value.height;
+      } else if (idx === 0) {
+        positionY.value =
+          getValue(currData, idx, ss).y * layoutSize.value.height;
+      } else {
+        // prev + diff over X
+        positionY.value =
+          (getValue(currData, idx - 1, ss).y +
+            (getValue(currData, idx, ss).y -
+              getValue(currData, idx - 1, ss).y) *
+              ((eventX / layoutSize.value.width -
+                getValue(currData, idx - 1, ss).x) /
+                (getValue(currData, idx, ss).x -
+                  getValue(currData, idx - 1, ss).x))) *
+          layoutSize.value.height;
+      }
+
       setoriginalXYAccordingToPosition(
         originalX,
         originalY,
         eventX / layoutSize.value.width,
         curroriginalData
       );
-      dotScale.value = withSpring(
-        1,
-        combineConfigs(springDefaultConfig, springConfig)
-      );
-
-      if (!android) {
-        positionX.value = positionXWithMargin(
-          eventX,
-          30,
-          layoutSize.value.width
-        );
-        positionY.value = currData.value[idx].y * layoutSize.value.height;
-        pathOpacity.value = withTiming(
-          0,
-          combineConfigs(timingFeedbackDefaultConfig, timingFeedbackConfig)
-        );
-      }
-      if (hapticsEnabledValue.value && !isStarted.value) {
-        impactHeavy();
-      }
-      isStarted.value = true;
+      positionX.value = eventX;
     },
   });
 
-  // @ts-ignore
   const dotStyle = useAnimatedStyle(
     () => ({
       opacity: dotScale.value,
@@ -521,7 +558,7 @@ function ChartPath({
     let toValue = currData.value;
     let res;
     let smoothing = 0;
-    let strategy = smoothingStrategy.value;
+    const strategy = smoothingStrategy.value;
     if (progress.value !== 1) {
       const numOfPoints = Math.round(
         fromValue.length +
