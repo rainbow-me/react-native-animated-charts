@@ -221,6 +221,7 @@ export default function ChartPathProvider({
     );
     setContextValue((prev) => ({ ...prev, ...newExtremes, data }));
     setExtremes(newExtremes);
+    let timeout;
     if (prevData.value.length !== 0) {
       valuesStore.current.prevData = currData.value;
       prevData.value = currData.value;
@@ -232,7 +233,7 @@ export default function ChartPathProvider({
       curroriginalData.value = parsedoriginalData;
       currSmoothing.value = data.smoothingFactor || 0;
       isAnimationInProgress.value = true;
-      setTimeout(
+      timeout = setTimeout(
         () => {
           isAnimationInProgress.value = false;
           if (dataQueue.value.length !== 0) {
@@ -257,6 +258,7 @@ export default function ChartPathProvider({
       currData.value = parsedData;
       curroriginalData.value = parsedoriginalData;
     }
+    return () => clearTimeout(timeout);
   }, [data]);
 
   const isStarted = useSharedValue(false, 'isStarted');
