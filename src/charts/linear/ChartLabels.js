@@ -23,13 +23,16 @@ function ChartLabelFactory(style) {
     return (
       <AnimatedTextInput
         {...props}
+        onContentSizeChange={(e) => {
+          props?.onShow && props.onShow(val.value)
+          }}
         animatedProps={textProps}
-        defaultValue={format ? format(val.value) : val.value}
+        // defaultValue={format ? format(val.value) : val.value}
+        value={format ? format(val.value) : val.value}
         editable={false}
       />
     );
-  };
-}
+  }}
 
-export const ChartYLabel = ChartLabelFactory('originalY');
+  export const ChartYLabel = ChartLabelFactory('originalY');
 export const ChartXLabel = ChartLabelFactory('originalX');
