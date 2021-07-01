@@ -71,7 +71,7 @@ export const data = [
   {x: 1454112000, y: 2.43}, {x: 1454198400, y: 2.20},
 ];
 
-const points = monotoneCubicInterpolation(data)(40);
+const points = monotoneCubicInterpolation({data, range: 40});
 
 const BasicExample = () => (
   <View style={{ backgroundColor: 'black' }}>
