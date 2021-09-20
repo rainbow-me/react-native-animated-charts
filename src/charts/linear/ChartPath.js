@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 import { LongPressGestureHandler } from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated, {
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useDerivedValue,
@@ -26,8 +27,8 @@ import { svgBezierPath } from '../../smoothing/smoothSVG';
 
 function impactHeavy() {
   'worklet';
-  (Animated.runOnJS
-    ? Animated.runOnJS(ReactNativeHapticFeedback.trigger)
+  (runOnJS
+    ? runOnJS(ReactNativeHapticFeedback.trigger)
     : ReactNativeHapticFeedback.trigger)('impactHeavy');
 }
 
@@ -108,6 +109,7 @@ function setoriginalXYAccordingToPosition(
     // prevent the following error on android:
     // java.lang.RuntimeException: undefined is not an object (evaluating 'data.value[idx].originalX')
     // why data.value = [] sometimes onActive?
+    // eslint-disable-next-line no-console
     console.warn('No data available for chart', data.value.length, idx);
     return;
   }
@@ -219,7 +221,7 @@ export default function ChartPathProvider({
     const [parsedoriginalData, newExtremes] = parse(
       data.nativePoints || data.points
     );
-    setContextValue((prev) => ({ ...prev, ...newExtremes, data }));
+    setContextValue(prev => ({ ...prev, ...newExtremes, data }));
     setExtremes(newExtremes);
     if (prevData.value.length !== 0) {
       valuesStore.current.prevData = currData.value;
@@ -262,7 +264,7 @@ export default function ChartPathProvider({
   const isStarted = useSharedValue(false, 'isStarted');
 
   const onLongPressGestureEvent = useAnimatedGestureHandler({
-    onActive: (event) => {
+    onActive: event => {
       state.value = event.state;
       if (!currData.value || currData.value.length === 0) {
         return;
@@ -340,7 +342,7 @@ export default function ChartPathProvider({
       );
       positionX.value = eventX;
     },
-    onCancel: (event) => {
+    onCancel: event => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -358,7 +360,7 @@ export default function ChartPathProvider({
         );
       }
     },
-    onEnd: (event) => {
+    onEnd: event => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -380,7 +382,7 @@ export default function ChartPathProvider({
         impactHeavy();
       }
     },
-    onFail: (event) => {
+    onFail: event => {
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -398,7 +400,7 @@ export default function ChartPathProvider({
         );
       }
     },
-    onStart: (event) => {
+    onStart: event => {
       // WARNING: the following code does not run on using iOS, but it does on Android.
       // I use the same code from onActive except of "progress.value = 1" which was taken from the original onStart.
       state.value = event.state;
