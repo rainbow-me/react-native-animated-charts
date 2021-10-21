@@ -144,6 +144,19 @@ Labels are useful while moving finger through the chart to show the exact value 
 | `format`     | reanimated worklet   | `a => a` | Worklet for formatting data from the chart. It can be useful when your data is a timestamp or currency.  |
 | ...props     | `object`             | `{}`     | Rest of the props applied to `TextInput` including `style`   |
 
+### `CurrentPositionVerticalLine` & `OpeningPositionHorizontalLine`
+CurrentPositionVerticalLine is a vertical line moving with user's finger through chart.
+
+OpeningPositionHorizontalLine is a horizontal static line on height of the first point.
+
+| Prop name    | type                 | default  | description |
+|--------------|----------------------|----------|-------------|
+| `color`      | `string`             | `#000000`| Color of the line.  |
+| `thickness`  | `number`             | `2`      | Thickness of the line.  |
+| `length`     | `number`             | `null`   | Length of the line.  |
+| ...props     | `object`             | `{}`     | Rest of the props applied to svg's `Line`.   |
+
+![](gifs/lines.png)
 
 
 ### Candle Charts
