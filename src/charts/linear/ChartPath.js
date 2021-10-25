@@ -188,6 +188,7 @@ export default function ChartPathProvider({
     state,
     setContextValue = () => {},
     providedData = rawData,
+    proceededData,
   } = useContext(ChartContext) || generateValues();
 
   const prevData = useSharedValue(valuesStore.current.prevData, 'prevData');
@@ -218,6 +219,7 @@ export default function ChartPathProvider({
       return;
     }
     const [parsedData] = parse(data.points, data.yRange);
+    proceededData.value = parsedData;
     const [parsedoriginalData, newExtremes] = parse(
       data.nativePoints || data.points
     );
