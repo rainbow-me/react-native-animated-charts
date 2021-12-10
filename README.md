@@ -115,16 +115,21 @@ This component is used for showing the path itself.
 | `smoothingWhileTransitioningEnabled` | `number`   | `false`                | Although smoothing is not complex computing, it might impact performance in some low-end devices so while having a big set of data it might be worth disable smoothing while transitioning.   |
 | `height`                             | `number`   | obligatory             | Height od the SVG canvas    |
 | `width`                              | `number`   | obligatory             | Width od the SVG canvas    |
+| `stroke`                             | `string`   | `transparent`          | Color of the path.  |
 | `strokeWidth`                        | `number`   | `1`                    | Width of the path.  |
 | `selectedStrokeWidth`                | `number`   | `1`                    | Width of the path selected.  |
 | `gestureEnabled`                     | `boolean`  | `true`                 | Defines if interaction with the chart should be allowed or not  |
 | `longPressGestureHandlerProps`       | `object`   | `{maxDist: 100000, minDurationMs: 0, shouldCancelWhenOutside: false}`  | Under the hood we're using `LongPressGestureHandler` for handling interactions. It's recommended to not override its props. However, it might be useful while interacting with another GH. |
 | `selectedOpacity`                    | `number`   | `0.7`                  | Target opacity of the path while touching the chart.
-| `hitSlop`                         | `number`   | `0`                    |  While scrubbing the chart touching edges of the screen you may want make points on the edges more accessible. With `hitSlop` it's possible to access points on edges doubling the speed of scrubbing beyond this margin.  |
-| `hapticsEnabled`                      | `boolean`  | `false`                |  On pressing in/out on the chart it might be expected to make haptic feedback. It will happen with `hapticsEnabled` set to `true`.  |
-| `springConfig`                       | object     | `{damping: 15, mass: 1, stiffness: 600}`  | Object [defining the spring animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). This spring is used for a dot's scale.
-| `timingFeedbackConfig`               | object     | `{duration: 80}`       | Object [defining the timing animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). `timingFeedbackConfig` is used for a path's opacity and width.
-| `timingAnimationConfig`              | object     | `{duration: 300}`      | Object [defining the timing animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). `timingAnimationConfig` is used for the transition between chart's data.
+| `hitSlop`                            | `number`   | `0`                    |  While scrubbing the chart touching edges of the screen you may want make points on the edges more accessible. With `hitSlop` it's possible to access points on edges doubling the speed of scrubbing beyond this margin.  |
+| `hapticsEnabled`                     | `boolean`  | `false`                |  On pressing in/out on the chart it might be expected to make haptic feedback. It will happen with `hapticsEnabled` set to `true`.  |
+| `springConfig`                       | object     | `{damping: 15, mass: 1, stiffness: 600}`  | Object [defining the spring animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). This spring is used for a dot's scale. |
+| `timingFeedbackConfig`               | object     | `{duration: 80}`       | Object [defining the timing animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). `timingFeedbackConfig` is used for a path's opacity and width. |
+| `timingAnimationConfig`              | object     | `{duration: 300}`      | Object [defining the timing animation](https://docs.swmansion.com/react-native-reanimated/docs/next/animations). `timingAnimationConfig` is used for the transition between chart's data. |
+| `gradientEnabled`                    | `boolean`  | `false`                | Specify if background gradient should be enabled for the path under the chart, if not provided it defaults to `false` |
+| `backgroundGradientFrom`             | `string`   | `stroke`               | Start color of the chart path background gradient, if a value is not provided for this prop, it defaults to the stroke color, and if no stroke color is specified, it defaults to `#000000` |
+| `backgroundGradientTo`               | `string`   | `#FFFFFF`              | Stop color of the chart path background gradient, if a value is not provided for this prop, it defaults to `#FFFFFF` |
+| `stopOpacity`                        | `number`   | `0`                    | Opacity of the path background gradient stop color. Defaults to `0` if not provided. |
 | ...rest                              | `object`   | `{}`                   | Props applied to SVG [Path](https://github.com/react-native-community/react-native-svg#path). |
 
 
