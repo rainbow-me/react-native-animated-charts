@@ -17,7 +17,13 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Path, Svg } from 'react-native-svg';
+import {
+  Path,
+  Svg,
+  Defs,
+  Stop,
+  LinearGradient
+} from 'react-native-svg';
 
 import ChartContext, {
   useGenerateValues as generateValues,
@@ -673,6 +679,16 @@ function ChartPath({
     return props;
   }, []);
 
+  const gradientAnimatedProps = useAnimatedStyle(() => {
+    const pathValue = path.value.replace('M', 'L');
+    const gradientD = pathValue.length > 0 ? `M 0,${height} C 0,0 0,0 0,0 ${pathValue} L ${width},${height}` : '';
+    const props = {
+      d: gradientD,
+
+    };
+    return props;
+  }, []);
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: pathOpacity.value * (1 - selectedOpacity) + selectedOpacity,
@@ -683,6 +699,7 @@ function ChartPath({
     <InternalContext.Provider
       value={{
         animatedProps,
+        gradientAnimatedProps,
         animatedStyle,
         gestureEnabled,
         height,
@@ -705,6 +722,7 @@ export function SvgComponent() {
     height,
     width,
     animatedProps,
+    gradientAnimatedProps,
     props,
     onLongPressGestureEvent,
     gestureEnabled,
@@ -725,6 +743,23 @@ export function SvgComponent() {
           viewBox={`0 0 ${width} ${height}`}
           width={width}
         >
+          <AnimatedPath
+            animatedProps={gradientAnimatedProps}
+            fill="url(#prefix__paint0_linear)"
+          />
+          {
+            props.gradientEnabled &&
+            <Defs>
+              <LinearGradient id="prefix__paint0_linear" x1="100%" y1="0%" x2="100%" y2="120%">
+                <Stop stopColor={props.backgroundGradientFrom ?? props.stroke} />
+                <Stop
+                  offset="100%"
+                  stopColor={props.backgroundGradientTo ?? '#FFFFFF'}
+                  stopOpacity={props.stopOpacity ?? 0}
+                />
+              </LinearGradient>
+            </Defs>
+          }
           <AnimatedPath
             animatedProps={animatedProps}
             {...props}
