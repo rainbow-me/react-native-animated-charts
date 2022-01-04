@@ -11,11 +11,6 @@ export function findYExtremes(data) {
     }
   }
 
-  if (greatestY.y === smallestY.y) {
-    const val = smallestY.y;
-    greatestY = { ...greatestY, y: val + 1 };
-    smallestY = { ...smallestY, y: val - 1 };
-  }
 
   return {
     greatestY,
