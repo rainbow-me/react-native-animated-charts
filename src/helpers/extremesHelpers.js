@@ -10,8 +10,6 @@ export function findYExtremes(data) {
       greatestY = d;
     }
   }
-
-
   return {
     greatestY,
     smallestY,
