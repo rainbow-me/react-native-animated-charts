@@ -68,8 +68,9 @@ function combineConfigs(a, b) {
 
 const parse = (data, yRange) => {
   const { greatestY, smallestY } = findYExtremes(data);
-  const minY = yRange ? yRange[0] : smallestY.y;
-  const maxY = yRange ? yRange[1] : greatestY.y;
+  const sameExtremes = smallestY.y === greatestY.y ? 1 : 0;
+  const minY = yRange ? yRange[0] : smallestY.y - sameExtremes;
+  const maxY = yRange ? yRange[1] : greatestY.y + sameExtremes;
   const smallestX = data[0];
   const greatestX = data[data.length - 1];
   return [
