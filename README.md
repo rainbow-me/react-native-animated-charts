@@ -17,6 +17,8 @@ It's a part of the [Rainbow.me project](https://rainbow.me/).
 
 ## Installation
 
+> ⚠️  Caution: This library relies on outdated versions of `react-native-reanimated` and `react-native-gesture-handler` which may conflict with more recent versions of these libraries that your project may already be using. You can find information [here](https://github.com/rainbow-me/react-native-animated-charts/issues/61) and [here](https://stackoverflow.com/questions/62692656/animated-node-with-id-2-already-exists) on how to deal with this problem.
+
 1. Install [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/next/fundamentals/installation) in the newest version. 
 2. 
 ```bash
