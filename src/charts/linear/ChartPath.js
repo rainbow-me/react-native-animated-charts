@@ -189,6 +189,7 @@ export default function ChartPathProvider({
     setContextValue = () => {},
     providedData = rawData,
     proceededData,
+    isActive,
   } = useContext(ChartContext) || generateValues();
 
   const prevData = useSharedValue(valuesStore.current.prevData, 'prevData');
@@ -267,6 +268,9 @@ export default function ChartPathProvider({
 
   const onLongPressGestureEvent = useAnimatedGestureHandler({
     onActive: event => {
+      if (!isActive.value) {
+        isActive.value = true;
+      }
       state.value = event.state;
       if (!currData.value || currData.value.length === 0) {
         return;
@@ -345,6 +349,7 @@ export default function ChartPathProvider({
       positionX.value = eventX;
     },
     onCancel: event => {
+      isActive.value = false;
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -363,6 +368,7 @@ export default function ChartPathProvider({
       }
     },
     onEnd: event => {
+      isActive.value = false;
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -385,6 +391,7 @@ export default function ChartPathProvider({
       }
     },
     onFail: event => {
+      isActive.value = false;
       isStarted.value = false;
       state.value = event.state;
       originalX.value = '';
@@ -405,6 +412,9 @@ export default function ChartPathProvider({
     onStart: event => {
       // WARNING: the following code does not run on using iOS, but it does on Android.
       // I use the same code from onActive except of "progress.value = 1" which was taken from the original onStart.
+      if (Platform.OS === 'android') {
+        isActive.value = true;
+      }
       state.value = event.state;
       if (!currData.value || currData.value.length === 0) {
         return;

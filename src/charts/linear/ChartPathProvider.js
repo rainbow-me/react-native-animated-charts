@@ -10,6 +10,7 @@ import ChartContext, { useGenerateValues } from '../../helpers/ChartContext';
 export default function ChartPathProvider({ data: providedData, children }) {
   const values = useGenerateValues();
   const proceededData = useSharedValue(null);
+  const isActive = useSharedValue(false);
   const dotStyle = useAnimatedStyle(
     () => ({
       opacity: values.dotScale.value,
@@ -47,6 +48,7 @@ export default function ChartPathProvider({ data: providedData, children }) {
   const [contextReanimatedValue, setContextValue] = useState({});
   const contextValue = useMemo(
     () => ({
+      isActive,
       dotStyle,
       currentPositionVerticalLineStyle,
       openingPositionHorizontalLineStyle,
@@ -57,6 +59,7 @@ export default function ChartPathProvider({ data: providedData, children }) {
       setContextValue,
     }),
     [
+      isActive,
       dotStyle,
       currentPositionVerticalLineStyle,
       openingPositionHorizontalLineStyle,
