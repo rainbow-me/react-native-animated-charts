@@ -633,7 +633,7 @@ function ChartPath({
       })
       .join(' ')
       .replace('L', 'M');
-  }, [currData.value, prevData.value, width, height]);
+  }, [currData.value, prevData.value, smoothingStrategy.value, width, height]);
 
   const animatedProps = useAnimatedStyle(() => {
     const props = {
