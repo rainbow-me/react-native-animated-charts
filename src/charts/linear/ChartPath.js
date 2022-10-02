@@ -191,6 +191,9 @@ export default function ChartPathProvider({
     proceededData,
   } = useContext(ChartContext) || generateValues();
 
+  const height = rest.height || layoutSize.value.height;
+  const width = rest.width || layoutSize.value.width;
+
   const prevData = useSharedValue(valuesStore.current.prevData, 'prevData');
   const currData = useSharedValue(valuesStore.current.currData, 'currData');
   const curroriginalData = useSharedValue(
@@ -287,16 +290,12 @@ export default function ChartPathProvider({
       }
       isStarted.value = true;
 
-      const eventX = positionXWithMargin(
-        event.x,
-        hitSlopValue.value,
-        layoutSize.value.width
-      );
+      const eventX = positionXWithMargin(event.x, hitSlopValue.value, width);
 
       let idx = 0;
       const ss = smoothingStrategy;
       for (let i = 0; i < currData.value.length; i++) {
-        if (getValue(currData, i, ss).x > eventX / layoutSize.value.width) {
+        if (getValue(currData, i, ss).x > eventX / width) {
           idx = i;
           break;
         }
@@ -308,38 +307,32 @@ export default function ChartPathProvider({
       if (
         ss.value === 'bezier' &&
         currData.value.length > 30 &&
-        eventX / layoutSize.value.width >=
-          currData.value[currData.value.length - 2].x
+        eventX / width >= currData.value[currData.value.length - 2].x
       ) {
         const prevLastY = currData.value[currData.value.length - 2].y;
         const prevLastX = currData.value[currData.value.length - 2].x;
         const lastY = currData.value[currData.value.length - 1].y;
         const lastX = currData.value[currData.value.length - 1].x;
-        const progress =
-          (eventX / layoutSize.value.width - prevLastX) / (lastX - prevLastX);
-        positionY.value =
-          (prevLastY + progress * (lastY - prevLastY)) *
-          layoutSize.value.height;
+        const progress = (eventX / width - prevLastX) / (lastX - prevLastX);
+        positionY.value = (prevLastY + progress * (lastY - prevLastY)) * height;
       } else if (idx === 0) {
-        positionY.value =
-          getValue(currData, idx, ss).y * layoutSize.value.height;
+        positionY.value = getValue(currData, idx, ss).y * height;
       } else {
         // prev + diff over X
         positionY.value =
           (getValue(currData, idx - 1, ss).y +
             (getValue(currData, idx, ss).y -
               getValue(currData, idx - 1, ss).y) *
-              ((eventX / layoutSize.value.width -
-                getValue(currData, idx - 1, ss).x) /
+              ((eventX / width - getValue(currData, idx - 1, ss).x) /
                 (getValue(currData, idx, ss).x -
                   getValue(currData, idx - 1, ss).x))) *
-          layoutSize.value.height;
+          height;
       }
 
       setoriginalXYAccordingToPosition(
         originalX,
         originalY,
-        eventX / layoutSize.value.width,
+        eventX / width,
         curroriginalData
       );
       positionX.value = eventX;
@@ -425,17 +418,13 @@ export default function ChartPathProvider({
       }
       isStarted.value = true;
 
-      const eventX = positionXWithMargin(
-        event.x,
-        hitSlopValue.value,
-        layoutSize.value.width
-      );
+      const eventX = positionXWithMargin(event.x, hitSlopValue.value, width);
 
       progress.value = 1;
       let idx = 0;
       const ss = smoothingStrategy;
       for (let i = 0; i < currData.value.length; i++) {
-        if (getValue(currData, i, ss).x > eventX / layoutSize.value.width) {
+        if (getValue(currData, i, ss).x > eventX / width) {
           idx = i;
           break;
         }
@@ -447,38 +436,32 @@ export default function ChartPathProvider({
       if (
         ss.value === 'bezier' &&
         currData.value.length > 30 &&
-        eventX / layoutSize.value.width >=
-          currData.value[currData.value.length - 2].x
+        eventX / width >= currData.value[currData.value.length - 2].x
       ) {
         const prevLastY = currData.value[currData.value.length - 2].y;
         const prevLastX = currData.value[currData.value.length - 2].x;
         const lastY = currData.value[currData.value.length - 1].y;
         const lastX = currData.value[currData.value.length - 1].x;
-        const progress =
-          (eventX / layoutSize.value.width - prevLastX) / (lastX - prevLastX);
-        positionY.value =
-          (prevLastY + progress * (lastY - prevLastY)) *
-          layoutSize.value.height;
+        const progress = (eventX / width - prevLastX) / (lastX - prevLastX);
+        positionY.value = (prevLastY + progress * (lastY - prevLastY)) * height;
       } else if (idx === 0) {
-        positionY.value =
-          getValue(currData, idx, ss).y * layoutSize.value.height;
+        positionY.value = getValue(currData, idx, ss).y * height;
       } else {
         // prev + diff over X
         positionY.value =
           (getValue(currData, idx - 1, ss).y +
             (getValue(currData, idx, ss).y -
               getValue(currData, idx - 1, ss).y) *
-              ((eventX / layoutSize.value.width -
-                getValue(currData, idx - 1, ss).x) /
+              ((eventX / width - getValue(currData, idx - 1, ss).x) /
                 (getValue(currData, idx, ss).x -
                   getValue(currData, idx - 1, ss).x))) *
-          layoutSize.value.height;
+          height;
       }
 
       setoriginalXYAccordingToPosition(
         originalX,
         originalY,
-        eventX / layoutSize.value.width,
+        eventX / width,
         curroriginalData
       );
       positionX.value = eventX;
@@ -506,7 +489,6 @@ export default function ChartPathProvider({
         data,
         dotStyle,
         extremes,
-        layoutSize,
         onLongPressGestureEvent,
         originalX,
         originalY,
@@ -542,7 +524,6 @@ function ChartPath({
   currSmoothing,
   pathOpacity,
   progress,
-  layoutSize,
   __disableRendering,
   children,
   ...props
@@ -552,10 +533,6 @@ function ChartPath({
   );
   const selectedStrokeWidthValue = useSharedValue(selectedStrokeWidth);
   const strokeWidthValue = useSharedValue(strokeWidth);
-
-  useEffect(() => {
-    layoutSize.value = { height, width };
-  }, [height, layoutSize, width]);
 
   const path = useDerivedValue(() => {
     let fromValue = prevData.value;
@@ -605,16 +582,16 @@ function ChartPath({
 
       res = fromValue.map(({ x, y }, i) => {
         const { x: nX, y: nY } = toValue[i];
-        const mX = (x + (nX - x) * progress.value) * layoutSize.value.width;
-        const mY = (y + (nY - y) * progress.value) * layoutSize.value.height;
+        const mX = (x + (nX - x) * progress.value) * width;
+        const mY = (y + (nY - y) * progress.value) * height;
         return { x: mX, y: mY };
       });
     } else {
       smoothing = currSmoothing.value;
       res = toValue.map(({ x, y }) => {
         return {
-          x: x * layoutSize.value.width,
-          y: y * layoutSize.value.height,
+          x: x * width,
+          y: y * height,
         };
       });
     }
@@ -632,7 +609,7 @@ function ChartPath({
           { x: -res[4].x, y: res[0].y },
         ].concat(res);
       }
-      if (lastValue.x === layoutSize.value.width && strategy !== 'bezier') {
+      if (lastValue.x === width && strategy !== 'bezier') {
         // extrapolate the last points
         res[res.length - 1].x = lastValue.x + 20;
         if (res.length > 2) {
@@ -656,7 +633,7 @@ function ChartPath({
       })
       .join(' ')
       .replace('L', 'M');
-  });
+  }, [currData.value, prevData.value, smoothingStrategy.value, width, height]);
 
   const animatedProps = useAnimatedStyle(() => {
     const props = {
