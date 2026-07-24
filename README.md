@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **This repository is archived.** Development moved into the [Rainbow app](https://github.com/rainbow-me/rainbow) in late 2021 and continues at [`src/react-native-animated-charts`](https://github.com/rainbow-me/rainbow/tree/develop/src/react-native-animated-charts), where the library has since migrated to TypeScript and modern Reanimated. This snapshot is frozen at the 2021 JavaScript API and receives no maintenance; the npm package `@rainbow-me/animated-charts` is likewise unmaintained.
+> **This repository is archived.** Development moved into the [Rainbow app](https://github.com/rainbow-me/rainbow) in late 2021 and continues there, vendored inside the app's source tree, where the library has since migrated to TypeScript and modern Reanimated. This snapshot is frozen at the 2021 JavaScript API and receives no maintenance; the npm package `@rainbow-me/animated-charts` is likewise unmaintained.
 
 <p align="center">
   <h1 align="center">React Native Animated Charts</h1>
